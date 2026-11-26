@@ -26,9 +26,24 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.flywaydb:flyway-database-postgresql'
+
+	// Documentação de Contratos (Swagger / OpenAPI)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.1'
+
+	// Segurança: JWT (JJWT) e suporte criptográfico ao Argon2id (BouncyCastle)
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+	implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+
+	// Rate Limiting Distribuído (Bucket4j + Redis/Lettuce)
+	implementation 'com.bucket4j:bucket4j-core:8.10.1'
+	implementation 'com.bucket4j:bucket4j-redis:8.10.1'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-redis-test'
