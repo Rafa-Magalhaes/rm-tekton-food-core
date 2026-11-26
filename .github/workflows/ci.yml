@@ -59,4 +59,8 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: foodcore_password
           SPRING_DATA_REDIS_HOST: localhost
           SPRING_DATA_REDIS_PORT: 6379
+          JWT_SECRET: CiEphemeralJwtSecretKey32CharsMin2026Rm
+          JWT_EXPIRATION_HOURS: 8
+          SECURITY_PEPPER: CiEphemeralSecurityPepper32Chars2026Rm
+          COOKIE_SECURE: false
         run: ./gradlew clean build --no-daemon

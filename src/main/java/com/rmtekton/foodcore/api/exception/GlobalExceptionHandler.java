@@ -11,6 +11,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.rmtekton.foodcore.domain.exception.InvalidCredentialsException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class GlobalExceptionHandler {
     private static final String UNKNOWN_FIELD = "desconhecido";
     private static final String GLOBAL_REQUEST_FIELD = "requisicao";
     private static final String UNKNOWN_PATH = "N/A";
+    private static final String DEFAULT_INVALID_CREDENTIALS_MESSAGE = "E-mail ou senha inválidos";
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(
@@ -51,6 +53,14 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
         String safeMessage = sanitizeMessage(ex.getMessage(), DEFAULT_BUSINESS_RULE_MESSAGE);
         return buildResponse(HttpStatus.valueOf(422), "Violação de regra de negócio", safeMessage, request, null);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidCredentials(
+            InvalidCredentialsException ex,
+            HttpServletRequest request) {
+        String safeMessage = sanitizeMessage(ex.getMessage(), DEFAULT_INVALID_CREDENTIALS_MESSAGE);
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Não autorizado", safeMessage, request, null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -2,6 +2,7 @@ package com.rmtekton.foodcore.api.exception;
 
 import com.rmtekton.foodcore.domain.exception.BusinessRuleException;
 import com.rmtekton.foodcore.domain.exception.ConflictException;
+import com.rmtekton.foodcore.domain.exception.InvalidCredentialsException;
 import com.rmtekton.foodcore.domain.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,6 +119,20 @@ class GlobalExceptionHandlerTest {
                             tuple("email", "Informe um e-mail válido")
                     );
         }
+
+        @Test
+        @DisplayName("Deve retornar 401 quando InvalidCredentialsException for lançada")
+        void shouldReturn401WhenInvalidCredentialsOccurs() {
+            InvalidCredentialsException ex = new InvalidCredentialsException("E-mail ou senha inválidos");
+
+            ResponseEntity<ErrorResponseDTO> response = handler.handleInvalidCredentials(ex, request);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo(401);
+            assertThat(response.getBody().getError()).isEqualTo("Não autorizado");
+            assertThat(response.getBody().getMessage()).isEqualTo("E-mail ou senha inválidos");
+        }
     }
 
     @Nested
@@ -140,6 +155,17 @@ class GlobalExceptionHandlerTest {
             assertThat(conflictBlank.getBody().getMessage()).isEqualTo("Ocorreu um conflito de dados");
             assertThat(businessWhitespace.getBody()).isNotNull();
             assertThat(businessWhitespace.getBody().getMessage()).isEqualTo("Uma regra de negócio foi violada");
+        }
+
+        @Test
+        @DisplayName("Deve aplicar fallback em português quando InvalidCredentialsException vier com mensagem nula")
+        void shouldFallbackWhenInvalidCredentialsMessageIsNull() {
+            ResponseEntity<ErrorResponseDTO> response =
+                    handler.handleInvalidCredentials(new InvalidCredentialsException(null), request);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getMessage()).isEqualTo("E-mail ou senha inválidos");
         }
 
         @Test
